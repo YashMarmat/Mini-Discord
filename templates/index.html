@@ -1,0 +1,84 @@
+{% extends './base.html' %}
+
+{% load static %}
+{% block content %}
+
+<style>
+    body {
+        background-color: #36393f;
+        color: #fff;
+    }
+</style>
+
+<div style="display:flex; gap:20px;">
+    <div style="width:100%;">
+        <label class="mb-3"><b>Please enter/create chat room to join</b></label>
+        <input id="room-name-input" type="text" defaultvalue="" class="form-control"><br>
+        <button id="room-name-submit" type="button" class="btn btn-sm btn-success" disabled="true">
+            Join Room
+        </button>
+
+        <span class="text-danger">
+            {% if not request.user.is_authenticated %}
+            Login required!
+            {% endif %}
+        </span>
+    </div>
+    <div class="p-2 custom-overflow-bar" style="width:100%;border:2px solid black;height: 200px;overflow-y: scroll;border-radius: 5px;">
+        <div>
+            <b>Available Rooms</b>
+            <span class="text-danger">
+                {% if not request.user.is_authenticated %}
+                (Login required!)
+                {% endif %}
+            </span>
+        </div>
+
+        <ul>
+            {% for each_room in rooms %}
+            <li>
+                <a style="text-decoration:none;" href="/chat/{{ each_room.name }}/">
+                    {{ each_room.name }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<script>
+
+    document.querySelector("#room-name-input").onkeyup = function (e) {
+
+        let roomName = document.querySelector("#room-name-input").value
+
+        if (roomName === "") {
+            document.getElementById("room-name-submit").disabled = true
+        }
+
+        if (roomName !== "") {
+            document.getElementById("room-name-submit").disabled = false
+        }
+
+        if (e.keyCode === 13) { // enter key
+            document.querySelector("#room-name-submit").click()
+        }
+    }
+
+    document.querySelector("#room-name-submit").onclick = function (e) {
+        let roomName = document.querySelector("#room-name-input").value
+
+        // removing white spaces from left and right and placing underscore 
+        // for in between spaces in a string 
+        let updatedRoomName = roomName.trim().replace(" ", "_")
+
+        if (updatedRoomName === "") {
+            alert("please enter the room name")
+        } else {
+            document.getElementById("room-name-input").value = ""
+            window.location.pathname = `/chat/${updatedRoomName}/`;
+        }
+    }
+</script>
+
+{% endblock %}

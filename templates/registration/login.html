@@ -1,0 +1,35 @@
+{% extends '../base.html' %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: #838995;
+        color: #fff;
+    }
+</style>
+
+
+<div style="display:flex;justify-content:center;">
+
+    <form method="post" style="width:50%;">
+        <!-- <div style="text-align:center;">
+            <h3>Login</h3>
+        </div> -->
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-dark btn-fluid" style="width:100%">Log In</button>
+        <hr />
+        <div style="text-align:center;">
+            <span>
+                Don't have an account? <a href="/user/signup/" style="color:black;">Sign up</a>
+            </span>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

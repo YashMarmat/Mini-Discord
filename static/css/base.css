@@ -1,0 +1,74 @@
+.discordColorCss {
+    background-color:#36393f;
+    color:#fff;
+}
+
+.message-parent-css {
+    position: relative;
+    margin: 10px;
+    width: 5%;
+    height: 40px;
+}
+
+.discord-icon-css {
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+    border: 2px solid #fff;
+    border-radius: 100%;
+    padding: 2px;
+}
+
+.discord-icon-css2 {
+    border: 2px solid #fff;
+    border-radius: 100%;
+    padding: 2px;
+}
+
+.custom-btn-css {
+    color: #d9d9d9;
+    background-color: #464a53;
+    border: none;
+    font-size: 13px;
+    width: auto;
+    white-space: nowrap;
+    border-radius: 5px;
+    height: 40px;
+}
+
+.custom-li-bullet {
+    color: inherit;
+    list-style:none;
+}
+
+.custom-input-css {
+    width: 100%;
+    border: none;
+    background-color: #464a53;
+    outline: none;
+    padding-left: 10px;
+    border-radius: 5px;
+    color: #d9d9d9;                 /* text input color */
+}
+
+.custom-input-css::placeholder {
+    color: #d9d9d9;                 /* placeholder text color */
+}
+
+.custom-overflow-bar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-overflow-bar::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    border-radius: 10px;
+}
+
+.custom-overflow-bar::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+​
