@@ -2,89 +2,53 @@
 A mini discord application where users can join or create chat rooms to communicate. Developed with Django 4.1 and Django Channels.
 
 <p id ="top" align="center">
-  <img src="https://i.ibb.co/F3Vq9SD/login-page.png" width="45%" height="auto">
+  <img width="960" alt="homepage" src="https://user-images.githubusercontent.com/59337853/210165087-b135a862-da10-4123-8d7d-d20668a3ca97.png">  
 </p>
-
-Checkout the site in action here <a target="_blank" href="https://yash-marmat-projects-instagram.netlify.app/">Deployed App</a> 
-
-(Note: The website can take upto 30 seconds (hosted on Render free tier services), as the project has no clients, its just for learning, please refer the source
-code to run locally).
 
 # Table of contents
 - [Technologies_and_Tech_stack_involved](#Technologies_and_Tech_stack_involved)
-- [About_this_App](#About_this_App)
-  * [Home_page](#Home_page)
-  * [Single_post_page](#Single_post_page)
-  * [Add_Comment](#Add_Comment)
-  * [Explore_Page](#Explore_Page)
-  * [User_Inbox](#User_Inbox)
-  * [Your_Profile_Page](#Your_Profile_Page)
+  * [Chat_room](#Chat_room)
+  * [Conversation_room](#Conversation_room)
+  * [Multi_users](#Multi_users)
   * [Login_Page](#Login_Page)
   * [Sign_up_page](#Sign_up_page)
   * [Short_Note](#Short_Note)
 - [Installation](#Installation)
-  * [Backend](#backend)
-
+  * [application_setup](#application_setup)
+- [Documentation](#Documentation)
 
 ## Technologies_and_Tech_stack_involved
 - Python
-- Javascript
+- Django (4.1)
+- Django Channels
 - light weight sqlite database
-- React
-- Redux
-- Flask
-- JWT (token authentication)
 
-## About_this_App
-- An Instagram clone build with Flask, React, Redux.  
-- Allows users to like, share, comment, posts or create their own. 
-- follow or get connected with other users and more functionalities within the app to discover.
-
-### Home_page
-This page displays posts of only those users whom you are following.
+### Chat_room
+Here users can create or join an existing chat room.
 <p align="center">
-  <img width="50%" height="auto" src="https://i.ibb.co/xqsCmZK/insta-homepage.png">
+  <img width="960" alt="chat room" src="https://user-images.githubusercontent.com/59337853/210165259-3cbcec26-3810-4f98-87c9-f37247996ca2.png">
 </p>
 
-### Single_post_page
-This page displays the complete details about the post (like about, liked by, comments etc.)
+### Conversation_room
+The page displays the number of people present in the room, as well as the conversation. 
 <p align="center">
-  <img width="50%" height="auto" src="https://i.ibb.co/9H6PQ9b/single_post_page.png">
+  <img width="960" alt="conversation" src="https://user-images.githubusercontent.com/59337853/210165314-24e8fb32-adbd-466b-b42c-e73cace5dec6.png">
 </p>
 
-### Add_Comment
-The application is little strict about comments 😁, you need to follow the post's author in order to add comments (you can remove this feature too from the code).
+### Multi_users
+Multiple users can join the room once logged in.
 <p align="center">
-  <img width="50%" height="auto" src="https://i.ibb.co/sKCGn09/add-comment-page.png">
-</p>
-
-### Explore_Page
-At this page you can see posts, made by all the signed up users in the application (global posts in short).
-<p align="center">
-  <img width="50%" height="auto" src="https://i.ibb.co/N6WmVdf/explore-posts-page.png">
-</p>
-
-### User_Inbox
-Just like istagram here you can see your messages (your inbox basically), you can also send a new message to any user present in the application.
-<p align="center">
-  <img width="50%" height="auto" src="https://i.ibb.co/KhxKCdh/inbox-page.png">
-</p>
-
-### Your_Profile_Page
-Here you can manage your profile information like your profile picture (which you can update), your posts, followers and the people you are following.
-Also, just like instagram can also visit other peoples profile as well.
-<p align="center">
-  <img width="50%" height="auto" src="https://i.ibb.co/mTNbZcw/user_profile_page.png">
+  <img width="960" alt="multi users" src="https://user-images.githubusercontent.com/59337853/210165332-3b346000-8124-456c-a6db-6a50e356fa01.png">
 </p>
 
 ### Login_Page
 <p align="center">
-  <img width="50%" height="auto" src="https://i.ibb.co/F3Vq9SD/login-page.png">
+  <img width="958" alt="login" src="https://user-images.githubusercontent.com/59337853/210165347-cce761c7-a867-42a0-b6d8-f9fee7c30a54.png">
 </p>
 
 ### Sign_up_page
 <p align="center">
-  <img width="50%" height="auto" src="https://i.ibb.co/M81Ppk2/sign-up-page.png">
+  <img width="960" alt="sign up" src="https://user-images.githubusercontent.com/59337853/210165353-00f21a00-b6ab-4c3b-af10-53e9c9b4a535.png">
 </p>
 
 ## Short_Note
@@ -93,7 +57,7 @@ For this application i have only made available the apis or backend part, so tha
 ## Installation
 after downloading/cloning the repository code, follow below steps:
 
-### Backend
+### application_setup
 
 - create your virtual environment
 `python -m venv myenv` 
@@ -104,20 +68,24 @@ after downloading/cloning the repository code, follow below steps:
 - install project dependencies
 `pip install -r requirements.txt`
 
-- create your flask database
-`flask db init`
-
 - make your first migration
-`flask db migrate -m "create tables"`
+`python manage.py makemigrations`
 
-- upgrade or update your database
-`flask db upgrade`
+- migrate your changes
+`python manage.py migrate`
 
-- run the project
-`flask run`
+- run the server
+`python manage.py runserver`
 
 
-## All set ! Happy coding :)
+## All set :)
+
+
+## Documenation
+
+Here we will build the mini discord application step by step. I tried to explain every single step in as simplest way possible to keep it simple for beginners as well. So, let's gets started :)
+
+### Basic_Setup
 
 <p><a href="#top">Back to Top</a></p>
 
