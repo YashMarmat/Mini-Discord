@@ -115,7 +115,6 @@ The documentation is split into two steps => Step 1: directory and files setup |
 * Let's update our settings.py file, so that django can know about these changes.
 
 `
-
 INSTALLED_APPS = [
     # installed apps
 
@@ -133,9 +132,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-]
-
-`
+]`
 
 * Description
 
