@@ -470,5 +470,21 @@ The point of our discord application is to allow multiple users to chat or commu
 		
 * Coming back to our consumers, we need to remember a flow, to send something in chat room we first need to join the group by the method `group_add` provided by the channel layer, then we need to use another method of channel layer `group_send` in order to send an event type to the group, this event is basically a function only which gets invoked by this layer method. Note: all the methods of channel layers are asynchronous in nature so in order to work with WebsocketConsumer which is synchronous in nature we need to use async_to_sync methods. Steps shown below: 
 
+* (Step 1): Join the room
+
+<img width="359" alt="image" src="https://user-images.githubusercontent.com/59337853/210176768-27c6dc21-0b66-428a-9bf5-65b44aebad88.png">
+
+* (Step 2): Prepare an event to invoke
+
+<img width="578" alt="image" src="https://user-images.githubusercontent.com/59337853/210176785-195eca91-3f31-486b-8877-7df2adf8cfd0.png">
+
+* (Step 3): Invoke the python function mentioned in the event (in Step 2)
+
+<img width="299" alt="image" src="https://user-images.githubusercontent.com/59337853/210176823-7a4e98a5-5027-4bcb-ba52-82018518f190.png">
+
+* These are the crucial steps in order to invoke events in django channels. These events gets lastly gets received on the frontend level (which we discussed at room.js)
+
+* In our connect method, we are using this line of code `self.room.online.add(self.user)` in order to update the changes in our DB as well (keeping a record of online users).
+
 <p><a href="#top">Back to Top</a></p>
 
