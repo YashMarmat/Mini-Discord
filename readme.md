@@ -421,6 +421,8 @@ inside your mysite project folder there is a file called asgi.py, we need to mak
 
 ### Consumers
 
+* Before jumping into consumers make sure to create consumers.py file inside your chat application.
+
 * As per documentation Consumers are a rich abstraction that allows you to create ASGI applications easily. In practical terms Consumers are very much alike views its just that instead of rendering any templates they invokes certain events. To generate these events our consumers wraps the data in a json format and sends it as an event to the frontend. Once, the data received is parse into javascript object we can make use of this data in any way we like.
 
 * For our ChatConsumer to work it requires a websocket, for our application i have used WebsocketConsumer. Shown below;
@@ -505,6 +507,8 @@ The point of our discord application is to allow multiple users to chat or commu
 2) An event type "chat_message" is passed which basically invokes a python function "chat_message" (the function sends an event type of "new_message" which when received on frontend side (present in room.js), appends a new message in the chat room).
 
 3) Lastly, we are storing the user message in DB by `Message.objects.create(user=self.user, room=self.room, content=message)`.
+
+* NOTE: the entire ChatConsumer is quite big in length so in order to avoid consumption of extra spaces in this documentation, i have not included the class here but you can get the entire ChatConsumer class from <a href="https://github.com/YashMarmat/mini-discord/blob/master/chat/consumers.py">here</a>.
 
 <p><a href="#top">Back to Top</a></p>
 
