@@ -93,6 +93,7 @@ and few bootstrap settings, as mentioned below (just compare and paste it at end
           },
       ]
 
+Now, Place a templates folder at the root level of your project.
 
 ### Models
 
@@ -143,10 +144,9 @@ content or body of the message and the timestamp which records at what time the 
 
     python manage.py migrate
 
+### Chat app Views
+
 * Lets' create our views and templates now. (inside chat application)
-
-### Views
-
 * here => Chat/views.py
 
       from django.shortcuts import render
@@ -185,37 +185,121 @@ passing through a context dictionary by making a query to the DB of Room.objects
 basically creates or locates the room object whose name is given by the user, once the room is located we pass the information of room 
 name and all the earlier room messages made by users so far to the room.html template to display.
 
+### chat app Urls
+
+Let's declare the urls which will run our views when a particular url gets called. Inside the chap application create a new file `urls.py`
+
+	from django.urls import path
+	from . import views
+
+	urlpatterns = [
+	    path("", views.home_page, name="home"),
+	    path("chat/", views.index, name="index"),
+	    path("chat/<str:room_name>/", views.room, name="room"),
+	]
+	
+### useraccount app Views
+
+* Lets' create our useraccount views and templates now. (inside useraccount application)
+
+At this point we are basically trying to handle the logic of User Registration or sign up, as Django has many in built functionalities so we can make use of that and avoid creating something from scratch. 
+
+The `UserCreationForm` from `django.contrib.auth.forms` provides an easy interface for user sign up form, by default it provides a form with fields of username,
+password and password confirmation field. Also, im using generic class views which provides `CreateView` to create our form based on form_class we provide. As, shown below;
+
+* here => useraccounts/views.py
+
+	from django.shortcuts import render
+	from django.contrib.auth.forms import UserCreationForm
+	from django.urls import reverse_lazy
+	from django.views import generic
+
+
+	class SignUpView(generic.CreateView):
+	    form_class = UserCreationForm
+	    success_url = reverse_lazy('login')
+	    template_name = 'registration/signup.html'
+	    
+Let's create a folder called registration (why? more on this shortly) inside the templates folder and put our `signup.html` file there. As, shown below;
+
+<img width="182" alt="image" src="https://user-images.githubusercontent.com/59337853/210170468-858a3da4-501f-4e08-b589-c02f6cd6d5e5.png">
+
+Signup.html code is <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/registration/signup.html">here</a>.
+
+With the User Sign Up in place we also need a functionality to login, django provides an easy way to do this via `django.contrib.auth.urls` which serves many built in templates required for the user account related process like login, logout, password reset/change etc. For now, we will keep the login and logout in our project. When using this feature django tries to locate the login.html template by automatically searching for this file at this location => templates/registration/login.html
+
+So, in order to avoid template related errors we have already added the registration folder inside the templates (while placing the signup.html file). So, in this registration folder you need to place the `login.html` file. Get the code from <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/registration/login.html">here</a>.
+
+
+### useraccount app Urls
+
+Let's declare the urls which will run our useraccount views when a particular url gets called. Inside the useraccount application create a new file `urls.py` and
+put the following code in it.
+
+	from django.urls import path
+	from .views import SignUpView
+
+	urlpatterns = [
+	    path('signup/', SignUpView.as_view(), name='signup'),
+	]
+	
+### Project Level Urls
+
+As, we are serving seperate urls.py files for both chat and useraccount application, we need to tell django about it by updating the project level urls.py file.
+
+	from django.contrib import admin
+	from django.urls import path, include
+	from django.contrib.auth import views as auth_views 
+
+	urlpatterns = [
+	    path('admin/', admin.site.urls),
+	    path('accounts/', include('django.contrib.auth.urls')), 		# handles login and logout urls
+	    path('user/', include('useraccount.urls')),				# points to useraccount app urls.py file
+	    path('', include('chat.urls')),					# points to chat app urls.py file
+	]
+
+
 ### Templates
 
 Now, let move to the templates part, at the root level of our project create a directory called templates (you can see the structure of this
-repository to get an idea about the directories order) inside templates folder create four html files namely `base.html`, `navbar.html`, `homepage.html`,
+repository to get an idea about the directories order) inside templates folder create five html files namely `base.html`, `navbar.html`, `homepage.html`,
 `index.html` and `room.html`
 
 * base.html
 It the root or parent html whose properties will be inherited by the children htmls (homepage.html, index.html and room.html), the file contains all the
 cdn links and scripts for the bootstrap ui to work. 
 
-Get the code from here =>  
+Get the code from here =>  <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/base.html" target="_blank">base.html</a>
 
 * navbar.html
 for easier navigation of Home, Chat, Login, and Sign Up Pages. In navbar you will see your username if logged in, else anonymous user will be displayed.
 
-Get the code from here => 
+Get the code from here => <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/navbar.html" target="_blank">navbar.html</a>
 
 * index.html
 The page contains the input to take in the room name which is to be created or you can select the available room names from the list as well.
 The file also contains some javascript scripts which handles the functionality of the form. I added the comments in the code itself f Sor better
 understanding of the script. 
 
-Get the code from here =>   
+Get the code from here => <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/index.html" target="_blank">index.html</a>
 
 * room.html
 
 The page displays all the messages made by the user so far, the template is getting the data from the context dictionary which we passed in the room view function.
 It also displays the number of online users and few more javascript functionality for better user experience.
 
-Get the room.html code from here =>
-Get the room.js code from here =>
+Get the room.html code from here => <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/room.html" target="_blank">room.html</a>
+
+### static_files
+
+* Static files serves CSS, JS, Images etc. At the root level of your project create a directory called static, inside this directory create four folders namely `css`, `js`, `images`, `svgs`.
+
+* Inside js directory create a new file `room.js`.
+
+Get the room.js code from here => <a href="https://github.com/YashMarmat/mini-discord/blob/master/static/js/room.js" target="_blank">room.js</a>
+
+Make sure to put all the static files in your project.
+Get the static files from here => <a href="https://github.com/YashMarmat/mini-discord/tree/master/static" target="_blank">Static Files</a>
 
 * room.js code description (frontend websockets logic)
 
