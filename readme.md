@@ -480,7 +480,7 @@ The point of our discord application is to allow multiple users to chat or commu
 
 <img width="578" alt="image" src="https://user-images.githubusercontent.com/59337853/210176785-195eca91-3f31-486b-8877-7df2adf8cfd0.png">
 
-* (Step 3): Invoke the python function mentioned in the event (in Step 2)
+* (Step 3): Declare the python function mentioned in the event (in Step 2)
 
 <img width="299" alt="image" src="https://user-images.githubusercontent.com/59337853/210176823-7a4e98a5-5027-4bcb-ba52-82018518f190.png">
 
