@@ -387,6 +387,13 @@ inside your mysite project folder there is a file called asgi.py, we need to mak
 			)
 		    )
 		})
+
+* Also, for ASGI to work we need to tell django about it so go the settings.py file and put the below code just below WSGI_APPLICATION variable. As, shown below;
+
+		WSGI_APPLICATION = 'mysite.wsgi.application'
+
+		# Daphne
+		ASGI_APPLICATION = "mysite.asgi.application"
 		
 * The above code is all about handling routings in our application via Routers, Routers are themselves a valid ASGI applications. As, per django channels documentation it is recommended to use ProtocolTypeRouter, it basically nests both type of protocols http and websockets, for views the http protocols get invoked and for our consumers (more on this shortly) the "websockets" protocol get used.
 
@@ -441,7 +448,27 @@ Further in the same method we are accepting the connection by `self.accept()`. O
 
 ### Channel Layers
 
+The point of our discord application is to allow multiple users to chat or communicate in real time without any break in connection, in order to achieve that our consumers needs support of Channel Layers, A channel layer basically allows multiple consumer instances to talk with each other, and with other parts of Django. Every consumer instance has an automatically generated unique channel name, and so can be communicated with via a channel layer.
 
+* As per documentation:
+
+- A channel is a mailbox where messages can be sent to. Each channel has a name. Anyone who has the name of a channel can send a message to the channel.
+
+- A group is a group of related channels. A group has a name. Anyone who has the name of a group can add/remove a channel to the group by name and send a message to all channels in the group. It is not possible to enumerate what channels are in a particular group.
+
+* More on channels layers <a href="https://channels.readthedocs.io/en/stable/topics/channel_layers.html">here</a>
+
+* For our project we are using In-memory channels layers to test it locally, for production redis channel is the recommend. Implementation of redis <a href="https://channels.readthedocs.io/en/stable/topics/channel_layers.html">here</a>.
+
+* Let's go the settings.py file and place our channels configurations, you can place these settings above DATABASES section (or you can checkout my repository code). As shown below:
+
+		CHANNEL_LAYERS = {
+		    "default": {
+			"BACKEND": "channels.layers.InMemoryChannelLayer"
+		    }
+		}
+		
+* Coming back to our consumers, we need to remember a flow, to send something in chat room we first need to join the group by the method `group_add` provided by the channel layer, then we need to use another method of channel layer `group_send` in order to send an event type to the group, this event is basically a function only which gets invoked by this layer method. Note: all the methods of channel layers are asynchronous in nature so in order to work with WebsocketConsumer which is synchronous in nature we need to use async_to_sync methods. Steps shown below: 
 
 <p><a href="#top">Back to Top</a></p>
 
