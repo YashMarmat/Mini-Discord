@@ -239,12 +239,12 @@ password and password confirmation field. Also, im using generic class views whi
 * Let's declare the urls which will run our useraccount views when a particular url gets called. Inside the useraccount application create a new file `urls.py` and
 put the following code in it.
 
-	from django.urls import path
-	from .views import SignUpView
+		from django.urls import path
+		from .views import SignUpView
 
-	urlpatterns = [
-	    path('signup/', SignUpView.as_view(), name='signup'),
-	]
+		urlpatterns = [
+		    path('signup/', SignUpView.as_view(), name='signup'),
+		]
 	
 ### Project Level Urls
 
