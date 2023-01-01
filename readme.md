@@ -102,6 +102,8 @@ Here we will build the mini discord application step by step. I tried to explain
 
 `pip install crispy_bootstrap5` (enhanced bootstrap forms)
 
+`django-admin startproject mysite .`
+
 * Create two django applications namely "chat" and "accounts"
 
 `python manage.py startapp chat` (will work on the conversation related logic)
