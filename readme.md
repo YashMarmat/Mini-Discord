@@ -115,12 +115,12 @@ In this application we will keep a record or two things: Rooms and Message.
               return f'{self.name} (Online: {self.get_online_count()})'
 
 
-Rooms will contain the record of all the available rooms created by the logged users or admin. It contains
+* Rooms will contain the record of all the available rooms created by the logged users or admin. It contains
 two fields; "name" which holds the name of the room and "online" which will contain the list of users who
 are present or online in the room as its going to multiple user thats why i have used a many to many model relationship, 
 we will add the users in this field by using the .add function through our views (more on this shortly).
 
-It contains two seperate methods which provides an online count of users and another one display the name for the room object,
+* It contains two seperate methods which provides an online count of users and another one display the name for the room object,
 we basically using these methods for our django admin page only.
 
 
@@ -140,9 +140,9 @@ content or body of the message and the timestamp which records at what time the 
 
 * Now, that we have created our models lets run our migrations in order to create the DB tables.
 
-    python manage.py makemigrations
+`python manage.py makemigrations`
 
-    python manage.py migrate
+`python manage.py migrate`
 
 ### Chat app Views
 
@@ -219,16 +219,19 @@ password and password confirmation field. Also, im using generic class views whi
 	    form_class = UserCreationForm
 	    success_url = reverse_lazy('login')
 	    template_name = 'registration/signup.html'
-	    
+
+    
 Let's create a folder called registration (why? more on this shortly) inside the templates folder and put our `signup.html` file there. As, shown below;
 
 <img width="182" alt="image" src="https://user-images.githubusercontent.com/59337853/210170468-858a3da4-501f-4e08-b589-c02f6cd6d5e5.png">
 
 Signup.html code is <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/registration/signup.html">here</a>.
 
-With the User Sign Up in place we also need a functionality to login, django provides an easy way to do this via `django.contrib.auth.urls` which serves many built in templates required for the user account related process like login, logout, password reset/change etc. For now, we will keep the login and logout in our project. When using this feature django tries to locate the login.html template by automatically searching for this file at this location => templates/registration/login.html
+* With the User Sign Up in place we also need a functionality to login, django provides an easy way to do this via `django.contrib.auth.urls` which serves many built in templates required for the user account related process like login, logout, password reset/change etc. 
 
-So, in order to avoid template related errors we have already added the registration folder inside the templates (while placing the signup.html file). So, in this registration folder you need to place the `login.html` file. Get the code from <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/registration/login.html">here</a>.
+* For now, we will keep the login and logout in our project. When using this feature django tries to locate the login.html template by automatically searching for this file at this location => templates/registration/login.html
+
+* So, in order to avoid template related errors we have already added the registration folder inside the templates (while placing the signup.html file). So, in this registration folder you need to place the `login.html` file. Get the code from <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/registration/login.html">here</a>.
 
 
 ### useraccount app Urls
@@ -266,17 +269,20 @@ repository to get an idea about the directories order) inside templates folder c
 `index.html` and `room.html`
 
 * base.html
+
 It the root or parent html whose properties will be inherited by the children htmls (homepage.html, index.html and room.html), the file contains all the
 cdn links and scripts for the bootstrap ui to work. 
 
 Get the code from here =>  <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/base.html" target="_blank">base.html</a>
 
 * navbar.html
+
 for easier navigation of Home, Chat, Login, and Sign Up Pages. In navbar you will see your username if logged in, else anonymous user will be displayed.
 
 Get the code from here => <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/navbar.html" target="_blank">navbar.html</a>
 
 * index.html
+
 The page contains the input to take in the room name which is to be created or you can select the available room names from the list as well.
 The file also contains some javascript scripts which handles the functionality of the form. I added the comments in the code itself f Sor better
 understanding of the script. 
@@ -298,8 +304,7 @@ Get the room.html code from here => <a href="https://github.com/YashMarmat/mini-
 
 Get the room.js code from here => <a href="https://github.com/YashMarmat/mini-discord/blob/master/static/js/room.js" target="_blank">room.js</a>
 
-Make sure to put all the static files in your project.
-Get the static files from here => <a href="https://github.com/YashMarmat/mini-discord/tree/master/static" target="_blank">Static Files</a>
+* Make sure to put all the static files in your project. Get the static files from here => <a href="https://github.com/YashMarmat/mini-discord/tree/master/static" target="_blank">Static Files</a>
 
 * room.js code description (frontend websockets logic)
 
