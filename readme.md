@@ -486,5 +486,22 @@ The point of our discord application is to allow multiple users to chat or commu
 
 * In our connect method, we are using this line of code `self.room.online.add(self.user)` in order to update the changes in our DB as well (keeping a record of online users).
 
+### Remaining Methods
+
+* disconnect method
+
+<img width="482" alt="image" src="https://user-images.githubusercontent.com/59337853/210177020-34b1f2bd-24b6-4a99-98d7-a3e85999ac9b.png">
+
+- the first line of code updates the DB and removes the user from the online list.
+- being in the room group an event type "chat_room_left" is passed which basically invokes a python function "chat_room_left" (the function sends an event type of "user_list" which updates the online user count in the chat room)
+
+* receive method
+
+<img width="527" alt="image" src="https://user-images.githubusercontent.com/59337853/210177222-fb27b2a0-97c9-45a4-a263-eeb40f0ad28b.png">
+
+- converts the text message into python string format with `json.loads`.
+- An event type "chat_message" is passed which basically invokes a python function "chat_message" (the function sends an event type of "new_message" which when received on frontend side (present in room.js), appends a new message in the chat room).
+- Lastly, we are storing the user message in DB by `Message.objects.create(user=self.user, room=self.room, content=message)`.
+
 <p><a href="#top">Back to Top</a></p>
 
