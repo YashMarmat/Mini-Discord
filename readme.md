@@ -348,16 +348,100 @@ somehow to bypasses the room view logic of permission denied.
 
 <hr />
 
-### WSGI vs ASGI
+### ASGI (Asynchronous Server Gateway Interface)
 
-Now, that our Models, views and templates are done setting up lets work on the ASYNC logic which is the core part of this application. To undertand the django channels we need to understand how WSGI (on which django works by default works on) and ASGI works.
+Now, that our Models, views and templates are done setting up lets work on the ASYNC logic which is the core part of this application on which django channels works. To undertand the django channels we need to understand how WSGI (on which django works by default works on) and ASGI works.
 
-<img width="584" alt="wsgi vs asgi in django" src="https://user-images.githubusercontent.com/59337853/210166957-ff26a76d-4ded-405b-8d06-49c2287d2567.png">
+<img width="584" alt="wsgi_vs_asgi_in_django" src="https://user-images.githubusercontent.com/59337853/210166957-ff26a76d-4ded-405b-8d06-49c2287d2567.png" />
 
 The key thing to note here is, in case of normal django flow the http request gets closed once the response is provided by the server. In order to open
 the connection again the client needs to send another http request which again gets closed once the response is received. On the other hand in case of
 django channels the connection is controlled by web sockets which is very different from http requests, as in case of web sockets the connection gets
 closed when one of sides (either client or server) closes the connection, until then the connection remains open for multiple requests without any break.
+
+
+* asgi.py
+
+inside your mysite project folder there is a file called asgi.py, we need to make changes in this file in such a way that i could serve both HTTP and Websockets protocols. Changes shown below;
+
+		from channels.routing import ProtocolTypeRouter, URLRouter
+		from django.core.asgi import get_asgi_application
+
+		import os
+		from channels.auth import AuthMiddlewareStack
+		from channels.security.websocket import AllowedHostsOriginValidator
+		import chat.routing
+
+		os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
+
+		django_asgi_app = get_asgi_application()
+
+
+		application = ProtocolTypeRouter({
+		    'http': django_asgi_app,
+		    "websocket": AllowedHostsOriginValidator(
+			AuthMiddlewareStack(
+			    URLRouter(
+				chat.routing.websocket_urlpatterns
+			    )
+			)
+		    )
+		})
+		
+* The above code is all about handling routings in our application via Routers, Routers are themselves a valid ASGI applications. As, per django channels documentation it is recommended to use ProtocolTypeRouter, it basically nests both type of protocols http and websockets, for views the http protocols get invoked and for our consumers (more on this shortly) the "websockets" protocol get used.
+
+* `AllowedHostsOriginValidator` is a security middleware here, it automatically allows local connections through if the site is in DEBUG mode, much like Django’s host validation. If you want to allow some custom connections to pass through you can use `OriginValidator` more on this <a href="https://channels.readthedocs.io/en/stable/topics/security.html?highlight=AllowedHostsOriginValidator">here</a>
+
+* In order to use authentication in our django channels project we need to use `AuthMiddlewareStack` which combines the logic of SessionMiddleware and CookieMiddleware. More on this <a href="https://channels.readthedocs.io/en/stable/topics/authentication.html">here</a>
+
+* `chat.routing.websocket_urlpatterns` points to the location where our ws or websockets urls are present (path => chat/routing.py). So, let's create our websockets routes (mentioned below).
+
+### Websockets Routes
+
+* create a new file inside your chat application and name it as routing.py, once done put the following code in it.
+
+		from django.urls import re_path
+
+		from . import consumers
+
+		websocket_urlpatterns = [
+		    re_path(r"ws/chat/(?P<room_name>\w+)/$", consumers.ChatConsumer.as_asgi()),
+		]
+		
+* The layout of this file is very similar to our django urls, notice we are using re_path instead of regular "path" of django, one of the benefits of this is we can include regular expression in our url paths, another point is that we cannot pre-assume what room_name the user will going to choose or type, therefore a regular experssion is used here which basically accepts any characters or words placed after chat in the url, for example ws/chat/xyz_room/.
+
+* Once the url is invoked it will call the consumer attached in the path, which is ChatConsumer, for now we only need to know that consumers is a class, the as_asgi() will basically create an instance of our consumer class, in case of asgi applications these instances could be multiple because they serve asynchronous requests.
+
+### Consumers
+
+* As per documentation Consumers are a rich abstraction that allows you to create ASGI applications easily. In practical terms Consumers are very much alike views its just that instead of rendering any templates they invokes certain events. To generate these events our consumers wraps the data in a json format and sends it as an event to the frontend. Once, the data received is parse into javascript object we can make use of this data in any way we like.
+
+* For our ChatConsumer to work it requires a websocket, for our application i have used WebsocketConsumer. Shown below;
+
+<img width="495" alt="image" src="https://user-images.githubusercontent.com/59337853/210175416-2a74cb59-3c38-4069-8dd5-31ad0a0eb571.png">
+
+* Let's break it down one by one
+
+* __init__ method
+<img width="263" alt="image" src="https://user-images.githubusercontent.com/59337853/210175465-3bed5d8c-5cc6-45bc-b976-b6532b471e7a.png">
+
+A basic class constructor to hold our key value pairs, which we will update on the go.
+
+* connect method
+
+<img width="449" alt="image" src="https://user-images.githubusercontent.com/59337853/210175537-1808788c-0114-46dd-8fe6-8c90ca15c2c3.png">
+
+In case of django views we can extract information from the request argument if defined like this `def some_function(request, *args, **kwargs)`, so in order to get user information we do something like this `request.user`. Similary, in case of consumers we have scope instead of request, and in order to extract data we use bracket notations (not dot notations in case of request.user), so, we do something like this `self.scope["user"]`, you can see all the available keys value pairs inside this self.scope by just simply printing it `print(self.scope)`.
+
+So, as shown in image we are following bracket notations in order to get our room name and from that only we are constructing our group name. Also, locating our room by object by the room name give by the user.
+
+<img width="592" alt="image" src="https://user-images.githubusercontent.com/59337853/210175872-5ecb478f-3a8a-4629-8f8a-5faae83737f8.png">
+
+Further in the same method we are accepting the connection by `self.accept()`. Once, accepted if the user found to be unauthorized an event of "forbidden_access" gets invoked which basically redirects the user back to chat page (discussed while mentioning about room.js). Later in the code, we have used `async_to_sync` which basically takes in a asynchronous funtion and return it as an synchronous function. More on this in upcomming section Channel Layers.
+
+### Channel Layers
+
+
 
 <p><a href="#top">Back to Top</a></p>
 
