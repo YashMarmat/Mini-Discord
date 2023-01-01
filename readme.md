@@ -93,11 +93,11 @@ and few bootstrap settings, as mentioned below (just compare and paste it at end
           },
       ]
 
-Now, Place a templates folder at the root level of your project.
+* Now, Place a templates folder at the root level of your project.
 
 ### Models
 
-In this application we will keep a record or two things: Rooms and Message.
+* In this application we will keep a record or two things: Rooms and Message.
 
 * Room_Model
 
@@ -135,7 +135,7 @@ we basically using these methods for our django admin page only.
           def __str__(self):
               return f'{self.user.username} | {self.content} [{self.timestamp}]'
 
-The message model contains four fields which basically holds the name of the user who sent the message, the room for which the message was intended, the
+* The message model contains four fields which basically holds the name of the user who sent the message, the room for which the message was intended, the
 content or body of the message and the timestamp which records at what time the message was sent. Lastly, a method for representing our message model object.
 
 * Now, that we have created our models lets run our migrations in order to create the DB tables.
@@ -202,30 +202,30 @@ Let's declare the urls which will run our views when a particular url gets calle
 
 * Lets' create our useraccount views and templates now. (inside useraccount application)
 
-At this point we are basically trying to handle the logic of User Registration or sign up, as Django has many in built functionalities so we can make use of that and avoid creating something from scratch. 
+* At this point we are basically trying to handle the logic of User Registration or sign up, as Django has many in built functionalities so we can make use of that and avoid creating something from scratch. 
 
-The `UserCreationForm` from `django.contrib.auth.forms` provides an easy interface for user sign up form, by default it provides a form with fields of username,
+* The `UserCreationForm` from `django.contrib.auth.forms` provides an easy interface for user sign up form, by default it provides a form with fields of username,
 password and password confirmation field. Also, im using generic class views which provides `CreateView` to create our form based on form_class we provide. As, shown below;
 
 * here => useraccounts/views.py
 
-	from django.shortcuts import render
-	from django.contrib.auth.forms import UserCreationForm
-	from django.urls import reverse_lazy
-	from django.views import generic
+		from django.shortcuts import render
+		from django.contrib.auth.forms import UserCreationForm
+		from django.urls import reverse_lazy
+		from django.views import generic
 
 
-	class SignUpView(generic.CreateView):
-	    form_class = UserCreationForm
-	    success_url = reverse_lazy('login')
-	    template_name = 'registration/signup.html'
+		class SignUpView(generic.CreateView):
+		    form_class = UserCreationForm
+		    success_url = reverse_lazy('login')
+		    template_name = 'registration/signup.html'
 
     
-Let's create a folder called registration (why? more on this shortly) inside the templates folder and put our `signup.html` file there. As, shown below;
+* Let's create a folder called registration (why? more on this shortly) inside the templates folder and put our `signup.html` file there. As, shown below;
 
 <img width="182" alt="image" src="https://user-images.githubusercontent.com/59337853/210170468-858a3da4-501f-4e08-b589-c02f6cd6d5e5.png">
 
-Signup.html code is <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/registration/signup.html">here</a>.
+* Signup.html code is <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/registration/signup.html">here</a>.
 
 * With the User Sign Up in place we also need a functionality to login, django provides an easy way to do this via `django.contrib.auth.urls` which serves many built in templates required for the user account related process like login, logout, password reset/change etc. 
 
@@ -236,7 +236,7 @@ Signup.html code is <a href="https://github.com/YashMarmat/mini-discord/blob/mas
 
 ### useraccount app Urls
 
-Let's declare the urls which will run our useraccount views when a particular url gets called. Inside the useraccount application create a new file `urls.py` and
+* Let's declare the urls which will run our useraccount views when a particular url gets called. Inside the useraccount application create a new file `urls.py` and
 put the following code in it.
 
 	from django.urls import path
@@ -248,53 +248,53 @@ put the following code in it.
 	
 ### Project Level Urls
 
-As, we are serving seperate urls.py files for both chat and useraccount application, we need to tell django about it by updating the project level urls.py file.
+* As, we are serving seperate urls.py files for both chat and useraccount application, we need to tell django about it by updating the project level urls.py file.
 
-	from django.contrib import admin
-	from django.urls import path, include
-	from django.contrib.auth import views as auth_views 
+		from django.contrib import admin
+		from django.urls import path, include
+		from django.contrib.auth import views as auth_views 
 
-	urlpatterns = [
-	    path('admin/', admin.site.urls),
-	    path('accounts/', include('django.contrib.auth.urls')), 		# handles login and logout urls
-	    path('user/', include('useraccount.urls')),				# points to useraccount app urls.py file
-	    path('', include('chat.urls')),					# points to chat app urls.py file
-	]
+		urlpatterns = [
+		    path('admin/', admin.site.urls),
+		    path('accounts/', include('django.contrib.auth.urls')), 		# handles login and logout urls
+		    path('user/', include('useraccount.urls')),				# points to useraccount app urls.py file
+		    path('', include('chat.urls')),					# points to chat app urls.py file
+		]
 
 
 ### Templates
 
-Now, let move to the templates part, at the root level of our project create a directory called templates (you can see the structure of this
+* Now, let move to the templates part, at the root level of our project create a directory called templates (you can see the structure of this
 repository to get an idea about the directories order) inside templates folder create five html files namely `base.html`, `navbar.html`, `homepage.html`,
 `index.html` and `room.html`
 
 * base.html
 
 It the root or parent html whose properties will be inherited by the children htmls (homepage.html, index.html and room.html), the file contains all the
-cdn links and scripts for the bootstrap ui to work. 
+cdn links and scripts for the bootstrap ui to work. Get the code from here =>  <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/base.html" target="_blank">base.html</a>
 
-Get the code from here =>  <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/base.html" target="_blank">base.html</a>
+<hr />
 
 * navbar.html
 
-for easier navigation of Home, Chat, Login, and Sign Up Pages. In navbar you will see your username if logged in, else anonymous user will be displayed.
+for easier navigation of Home, Chat, Login, and Sign Up Pages. In navbar you will see your username if logged in, else anonymous user will be displayed. Get the code from here => <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/navbar.html" target="_blank">navbar.html</a>
 
-Get the code from here => <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/navbar.html" target="_blank">navbar.html</a>
+<hr />
 
 * index.html
 
 The page contains the input to take in the room name which is to be created or you can select the available room names from the list as well.
 The file also contains some javascript scripts which handles the functionality of the form. I added the comments in the code itself f Sor better
-understanding of the script. 
+understanding of the script. Get the code from here => <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/index.html" target="_blank">index.html</a>
 
-Get the code from here => <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/index.html" target="_blank">index.html</a>
+<hr />
 
 * room.html
 
 The page displays all the messages made by the user so far, the template is getting the data from the context dictionary which we passed in the room view function.
-It also displays the number of online users and few more javascript functionality for better user experience.
+It also displays the number of online users and few more javascript functionality for better user experience. Get the room.html code from here => <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/room.html" target="_blank">room.html</a>
 
-Get the room.html code from here => <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/room.html" target="_blank">room.html</a>
+<hr />
 
 ### static_files
 
@@ -302,11 +302,13 @@ Get the room.html code from here => <a href="https://github.com/YashMarmat/mini-
 
 * Inside js directory create a new file `room.js`.
 
-Get the room.js code from here => <a href="https://github.com/YashMarmat/mini-discord/blob/master/static/js/room.js" target="_blank">room.js</a>
+* Get the room.js code from here => <a href="https://github.com/YashMarmat/mini-discord/blob/master/static/js/room.js" target="_blank">room.js</a>
 
 * Make sure to put all the static files in your project. Get the static files from here => <a href="https://github.com/YashMarmat/mini-discord/tree/master/static" target="_blank">Static Files</a>
 
-* room.js code description (frontend websockets logic)
+### room.js code description 
+
+* frontend websockets logic
 
 * Below we have WebSocket instance with the url which needs to be invoked when user/client opens up a request.
 
@@ -329,17 +331,22 @@ the data.type allows us to identify which type of event got invoked. We are hand
 
 when this event gets invoked, we basically append the HTML code as in the ul tag of id="chat_log" (just like appending child elements in the parent element), its like pasting the html in the existing html code.
 
+<hr />
+
 * user_list
 
 when this event gets invoked, we first locate the ul tag of id="online-users" and in this tag we first of all removing the existing child elements so that an updated list of child elements can be added (basically list of users).
 
 Based on the number of users we have an online users count is provided, by locating the ul tag of id="num-of-users"
 
+<hr />
+
 * forbidden_access
 
 when this event gets invokded an alert gets raised of login required and user gets redirected to the chat page. Though this case will only occur if the user
 somehow to bypasses the room view logic of permission denied.
 
+<hr />
 
 ### WSGI vs ASGI
 
