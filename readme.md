@@ -15,7 +15,7 @@ A mini discord application where users can join or create chat rooms to communic
   * [Short_Note](#Short_Note)
 - [Installation](#Installation)
   * [application_setup](#application_setup)
-- [Documentation](#Documentation)
+- [Project_Documentation](#Project_Documentation)
 
 ## Technologies_and_Tech_stack_involved
 - Python
@@ -74,9 +74,9 @@ after downloading/cloning the repository code, follow below steps:
 - run the server
 `python manage.py runserver`
 
-## All set :)
+### All set :)
 
-## Documenation
+## Project_Documentation
 
 Here we will build the mini discord application step by step. I tried to explain every single step in as simplest way possible to keep it simple for beginners as well. So, let's gets started :)
 
