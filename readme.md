@@ -16,6 +16,21 @@ A mini discord application where users can join or create chat rooms to communic
 - [Installation](#Installation)
   * [application_setup](#application_setup)
 - [Project_Documentation](#Project_Documentation)
+  * [Setup](#Setup)
+  * [Models](#Models)
+  * [chat_app_Views](#chat_app_Views)
+  * [chat_app_Urls](#chat_app_Urls)
+  * [useraccount_app_Views](#useraccount_app_Views)
+  * [useraccount_app_Urls](#useraccount_app_Urls)
+  * [Project_Level_Urls](#Project_Level_Urls)
+  * [Templates](#Templates)
+  * [Static_Files](#Static_Files)
+  * [ASGI](#ASGI)
+  * [Websockets_Routes](#Websockets_Routes)
+  * [Consumers](#Consumers)
+  * [Channel_Layers](#Channel_Layers)
+  * [Remaining_Methods](#Remaining_Methods)
+  * [Run_server](#Run_server)
 
 ## Technologies_and_Tech_stack_involved
 - Python
@@ -221,7 +236,7 @@ content or body of the message and the timestamp which records at what time the 
 
 `python manage.py migrate`
 
-### chat app Views
+### chat_app_Views
 
 * Lets' create our views and templates now. (inside chat application)
 * here => Chat/views.py
@@ -262,7 +277,7 @@ passing through a context dictionary by making a query to the DB of Room.objects
 basically creates or locates the room object whose name is given by the user, once the room is located we pass the information of room 
 name and all the earlier room messages made by users so far to the room.html template to display.
 
-### chat app Urls
+### chat_app_Urls
 
 Let's declare the urls which will run our views when a particular url gets called. Inside the chap application create a new file `urls.py`
 
@@ -275,7 +290,7 @@ Let's declare the urls which will run our views when a particular url gets calle
 	    path("chat/<str:room_name>/", views.room, name="room"),
 	]
 	
-### useraccount app Views
+### useraccount_app_Views
 
 * Lets' create our useraccount views and templates now. (inside useraccount application)
 
@@ -311,7 +326,7 @@ password and password confirmation field. Also, im using generic class views whi
 * So, in order to avoid template related errors we have already added the registration folder inside the templates (while placing the signup.html file). So, in this registration folder you need to place the `login.html` file. Get the code from <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/registration/login.html">here</a>.
 
 
-### useraccount app Urls
+### useraccount_app_Urls
 
 * Let's declare the urls which will run our useraccount views when a particular url gets called. Inside the useraccount application create a new file `urls.py` and
 put the following code in it.
@@ -323,7 +338,7 @@ put the following code in it.
 		    path('signup/', SignUpView.as_view(), name='signup'),
 		]
 	
-### Project Level Urls
+### Project_Level_Urls
 
 * As, we are serving seperate urls.py files for both chat and useraccount application, we need to tell django about it by updating the project level urls.py file.
 
@@ -376,7 +391,7 @@ It also displays the number of online users and few more javascript functionalit
 
 <hr />
 
-### Static Files
+### Static_Files
 
 * Static files serves CSS, JS, Images etc. At the root level of your project create a directory called static, inside this directory create four folders namely `css`, `js`, `images`, `svgs`.
 
@@ -428,7 +443,9 @@ somehow to bypasses the room view logic of permission denied.
 
 <hr />
 
-### ASGI (Asynchronous Server Gateway Interface)
+### ASGI 
+
+* (Asynchronous Server Gateway Interface)
 
 Now, that our Models, views and templates are done setting up lets work on the ASYNC logic which is the core part of this application on which django channels works. To undertand the django channels we need to understand how WSGI (on which django works by default works on) and ASGI works.
 
@@ -483,7 +500,7 @@ inside your mysite project folder there is a file called asgi.py, we need to mak
 
 * `chat.routing.websocket_urlpatterns` points to the location where our ws or websockets urls are present (path => chat/routing.py). So, let's create our websockets routes (mentioned below).
 
-### Websockets Routes
+### Websockets_Routes
 
 * create a new file inside your chat application and name it as routing.py, once done put the following code in it.
 
@@ -528,7 +545,7 @@ So, as shown in image we are following bracket notations in order to get our roo
 
 Further in the same method we are accepting the connection by `self.accept()`. Once, accepted if the user found to be unauthorized an event of "forbidden_access" gets invoked which basically redirects the user back to chat page (discussed while mentioning about room.js). Later in the code, we have used `async_to_sync` which basically takes in a asynchronous funtion and return it as an synchronous function. More on this in upcomming section Channel Layers.
 
-### Channel Layers
+### Channel_Layers
 
 The point of our discord application is to allow multiple users to chat or communicate in real time without any break in connection, in order to achieve that our consumers needs support of Channel Layers, A channel layer basically allows multiple consumer instances to talk with each other, and with other parts of Django. Every consumer instance has an automatically generated unique channel name, and so can be communicated with via a channel layer.
 
@@ -568,7 +585,7 @@ The point of our discord application is to allow multiple users to chat or commu
 
 * In our connect method, we are using this line of code `self.room.online.add(self.user)` in order to update the changes in our DB as well (keeping a record of online users).
 
-### Remaining Methods
+### Remaining_Methods
 
 * disconnect method
 
