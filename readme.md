@@ -31,6 +31,7 @@ A mini discord application where users can join or create chat rooms to communic
   * [Channel_Layers](#Channel_Layers)
   * [Remaining_Methods](#Remaining_Methods)
   * [Run_server](#Run_server)
+- [Helpful_Links_on_Django_Channels](#Helpful_Links_on_Django_Channels)
 
 ## Technologies_and_Tech_stack_involved
 - Python
@@ -748,13 +749,19 @@ The point of our discord application is to allow multiple users to chat or commu
 
 * Finally, Let's run our development server.
 
-<img width="473" alt="image" src="https://user-images.githubusercontent.com/59337853/210199624-2f088e25-9a49-4512-9008-0ba753a75ff0.png">
+<img width="473" alt="image" src="https://user-images.githubusercontent.com/59337853/210205948-742ab758-1478-4023-9287-0cc7370530bf.png">
 
 * If the server says its "Starting ASGI/Daphne version 4.0.0 development.....", this means we configured our django channels properly.
 
 * All set!, we finally created our mini discord application, you can modify or play around with this application in any way you like.
 
 ## Happy Coding :)
+
+## Helpful_Links_on_Django_Channels
+
+* (Docs) https://channels.readthedocs.io/en/stable/ 
+* (Blog) https://testdriven.io/blog/django-channels/
+* (Youtube Tutorial) https://www.youtube.com/watch?v=F4nwRQPXD8w&list=PLY2Jo2XRoTHoymGmVBeQ2dt0iWZ2FZbpc&index=5
 
 <p><a href="#top">Back to Top</a></p>
 
