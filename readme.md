@@ -78,7 +78,7 @@ after downloading/cloning the repository code, follow below steps:
 `myenv\scripts\activate`
 
 - install project dependencies
-`pip install -r requirements.txt`
+`pip install -U channels["daphne"] django crispy_bootstrap5`
 
 - make your first migration
 `python manage.py makemigrations`
