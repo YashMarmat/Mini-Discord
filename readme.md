@@ -98,8 +98,6 @@ Here we will build the mini discord application step by step. I tried to explain
 
 `pip install -U channels["daphne"]` (for django channels to work)
 
-`pip install crispy_forms` (enhanced bootstrap forms)
-
 `pip install crispy_bootstrap5` (enhanced bootstrap forms)
 
 `django-admin startproject mysite .`
@@ -108,7 +106,7 @@ Here we will build the mini discord application step by step. I tried to explain
 
 `python manage.py startapp chat` (will work on the conversation related logic)
 
-`python manage.py startapp accounts` (will work on sign up related logic)
+`python manage.py startapp useraccounts` (will work on sign up related logic)
 
 * Let's update INSTALLED_APPS section in settings.py file, so that django can know about these changes.
 
@@ -172,13 +170,13 @@ and few bootstrap settings, as mentioned below (just compare and paste it at end
           },
       ]
 
-* Now, Place a templates folder at the root level of your project.
+* Now, Place two folders at the root level of your project namely "templates" and "static".
 
 ### Models
 
 * In this application we will keep a record or two things: Rooms and Message.
 
-* Room_Model
+* Room_Model (here: chat/models.py)
 
       from django.contrib.auth.models import User
       from django.db import models
@@ -203,7 +201,7 @@ we will add the users in this field by using the .add function through our views
 we basically using these methods for our django admin page only.
 
 
-* Message_Model
+* Message_Model (here: chat/models.py)
 
       class Message(models.Model):
           user = models.ForeignKey(to=User, on_delete=models.CASCADE)
@@ -219,7 +217,7 @@ content or body of the message and the timestamp which records at what time the 
 
 * Now, that we have created our models lets run our migrations in order to create the DB tables.
 
-`python manage.py makemigrations`
+`python manage.py makemigrations chat`
 
 `python manage.py migrate`
 
@@ -331,7 +329,6 @@ put the following code in it.
 
 		from django.contrib import admin
 		from django.urls import path, include
-		from django.contrib.auth import views as auth_views 
 
 		urlpatterns = [
 		    path('admin/', admin.site.urls),
@@ -343,9 +340,7 @@ put the following code in it.
 
 ### Templates
 
-* Now, let move to the templates part, at the root level of our project create a directory called templates (you can see the structure of this
-repository to get an idea about the directories order) inside templates folder create five html files namely `base.html`, `navbar.html`, `homepage.html`,
-`index.html` and `room.html`
+* Now, lets move to the templates part, at the root level of our project inside your templates directory create five html files namely `base.html`, `navbar.html`, `homepage.html`, `index.html` and `room.html`
 
 * base.html
 
@@ -357,6 +352,12 @@ cdn links and scripts for the bootstrap ui to work. Get the code from here =>  <
 * navbar.html
 
 for easier navigation of Home, Chat, Login, and Sign Up Pages. In navbar you will see your username if logged in, else anonymous user will be displayed. Get the code from here => <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/navbar.html" target="_blank">navbar.html</a>
+
+<hr />
+
+* homepage.html
+
+Serves the main homepage of our application. Get the code from here => <a href="https://github.com/YashMarmat/mini-discord/blob/master/templates/homepage.html" target="_blank">homepage.html</a>
 
 <hr />
 
@@ -587,7 +588,156 @@ The point of our discord application is to allow multiple users to chat or commu
 
 3) Lastly, we are storing the user message in DB by `Message.objects.create(user=self.user, room=self.room, content=message)`.
 
-* NOTE: the entire ChatConsumer is quite big in length so in order to avoid consumption of extra spaces in this documentation, i have not included the class here but you can get the entire ChatConsumer class from <a href="https://github.com/YashMarmat/mini-discord/blob/master/chat/consumers.py">here</a>.
+* paste below code in chat/consumers.py
+
+			import json
+			# import random
+
+			from asgiref.sync import async_to_sync
+			from channels.generic.websocket import WebsocketConsumer
+			from .models import Room, Message
+			from django.shortcuts import redirect
+
+
+			class ChatConsumer(WebsocketConsumer):
+
+			    def __init__(self, *args, **kwargs):
+				super().__init__(args, kwargs)
+				self.room_name = None
+				self.room_group_name = None
+				self.room = None
+				self.user = None
+
+			    def connect(self):
+
+				# see current user
+				# print("Current user =>", self.scope["user"])
+
+				self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
+				self.room_group_name = "chat_%s" % self.room_name
+				self.room = Room.objects.get(name=self.room_name)
+				self.user = self.scope["user"]
+
+				# just playing around below
+				# if self.user.is_anonymous:
+				#     return self.disconnect(1000)
+
+				# accept the connection
+				self.accept()
+
+				if not self.user.is_authenticated:
+				    print("not authenticated!")
+				    # a redirect to chat page
+				    self.send(json.dumps({
+					'type': 'forbidden_access'
+				    }))
+
+				# work flow => 1) join room (by group_add), 2) send events in the room (by group_send)
+
+				# join the room group
+				async_to_sync(self.channel_layer.group_add)(
+				    self.room_group_name,
+				    self.channel_name,
+				)
+
+				user_to_add = self.user.username
+				joined_users = [user.username for user in self.room.online.all()]
+
+				if user_to_add not in joined_users:
+				    # print("checking")
+				    joined_users.append(user_to_add)
+
+				# Send message to room group
+				async_to_sync(self.channel_layer.group_send)(
+				    self.room_group_name, {
+					'type': 'chat_room_joined',                                     # function to invoke
+					'users': joined_users,    # event              
+				    }
+				)
+
+				self.room.online.add(self.user)
+				print("user joined!")
+
+			    def chat_room_joined(self, event):
+				existing_users = event['users']
+
+				self.send(text_data=json.dumps(
+				    {
+					"type": "user_list", 
+					"users": existing_users, 
+					}))
+
+			    def disconnect(self, close_code):
+
+				# updates in DB (for room)
+				self.room.online.remove(self.user)
+
+				# send the leave event to the room (needs to be in the room first)
+				async_to_sync(self.channel_layer.group_send)(
+				    self.room_group_name,
+				    {
+					'type': 'chat_room_left',
+					'remaining_users': [user.username for user in self.room.online.all()],
+				    }
+				)
+
+				# Leave room group
+				async_to_sync(self.channel_layer.group_discard)(
+				    self.room_group_name,
+				    self.channel_name
+				)
+
+				print("user left!")
+
+			    def chat_room_left(self, event):
+				remaining_users = event['remaining_users']
+
+				# updating the user_list (using the case user_list to update the online users list)
+				self.send(text_data=json.dumps(
+				    {"type": "user_list", "users": remaining_users }))
+
+			    # Receive message from WebSocket
+			    def receive(self, text_data):
+
+				# # current user
+				# current_user = self.scope["user"]
+				# print("current user =>", current_user)
+
+				text_data_json = json.loads(text_data)
+				message = text_data_json["message"]
+
+				# Send message to room group
+				async_to_sync(self.channel_layer.group_send)(
+				    self.room_group_name, {
+					"type": "chat_message",         # function to invoke
+					"message": message,             # will sent as an event
+					"user_name": self.user.username # will sent as an event
+				    }
+				)
+
+				# saving the user message in the DB
+				Message.objects.create(user=self.user, room=self.room, content=message)
+
+			    # Receive message from room group
+			    def chat_message(self, event):
+				message = event["message"]
+				user_name = event["user_name"]
+
+				# Send message to WebSocket
+				self.send(text_data=json.dumps(
+				    {"type": "new_message", "message": message, "user_name": user_name}))
+				    
+### Run_server
+
+* Finally, Let's run our development server.
+
+<img width="473" alt="image" src="https://user-images.githubusercontent.com/59337853/210199624-2f088e25-9a49-4512-9008-0ba753a75ff0.png">
+
+* If the server says its "Starting ASGI/Daphne version 4.0.0 development.....", this means we configured our django channels properly.
+
+### All set!, we finally created our mini discord application, you can modify or play around with this application in any way you like.
+
+## Happy Coding :)
 
 <p><a href="#top">Back to Top</a></p>
 
