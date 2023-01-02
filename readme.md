@@ -221,7 +221,7 @@ content or body of the message and the timestamp which records at what time the 
 
 `python manage.py migrate`
 
-### Chat app Views
+### chat app Views
 
 * Lets' create our views and templates now. (inside chat application)
 * here => Chat/views.py
@@ -376,7 +376,7 @@ It also displays the number of online users and few more javascript functionalit
 
 <hr />
 
-### static_files
+### Static Files
 
 * Static files serves CSS, JS, Images etc. At the root level of your project create a directory called static, inside this directory create four folders namely `css`, `js`, `images`, `svgs`.
 
@@ -735,7 +735,7 @@ The point of our discord application is to allow multiple users to chat or commu
 
 * If the server says its "Starting ASGI/Daphne version 4.0.0 development.....", this means we configured our django channels properly.
 
-### All set!, we finally created our mini discord application, you can modify or play around with this application in any way you like.
+* All set!, we finally created our mini discord application, you can modify or play around with this application in any way you like.
 
 ## Happy Coding :)
 
