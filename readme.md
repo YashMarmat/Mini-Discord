@@ -121,7 +121,7 @@ Here we will build the mini discord application step by step. I tried to explain
 
 `python manage.py startapp chat` (will work on the conversation related logic)
 
-`python manage.py startapp useraccounts` (will work on sign up related logic)
+`python manage.py startapp useraccount` (will work on sign up related logic)
 
 * Let's update INSTALLED_APPS section in settings.py file, so that django can know about these changes.
 
@@ -299,7 +299,7 @@ Let's declare the urls which will run our views when a particular url gets calle
 * The `UserCreationForm` from `django.contrib.auth.forms` provides an easy interface for user sign up form, by default it provides a form with fields of username,
 password and password confirmation field. Also, im using generic class views which provides `CreateView` to create our form based on form_class we provide. As, shown below;
 
-* here => useraccounts/views.py
+* here => useraccount/views.py
 
 		from django.shortcuts import render
 		from django.contrib.auth.forms import UserCreationForm
