@@ -12,7 +12,6 @@ A mini discord application where users can join or create chat rooms to communic
   * [Multi_users](#Multi_users)
   * [Login_Page](#Login_Page)
   * [Sign_up_page](#Sign_up_page)
-  * [Short_Note](#Short_Note)
 - [Installation](#Installation)
   * [application_setup](#application_setup)
 - [Project_Documentation](#Project_Documentation)
